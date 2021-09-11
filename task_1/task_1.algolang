@@ -1,0 +1,36 @@
+<algo>
+    <params>
+        <param name = "n" type = "int" value = "3"></param>
+        <param name = "m" type = "int" value = "3"></param>
+    </params>
+
+    <block id = "0" dims = "1">
+        <arg name = "i" val = "1..N"></arg>
+
+        <vertex condition = "" type = "1">
+            <in bsrc = -1 src = "i"></in> # Тут точно bsrc = 0 для обознчения зависимости от D?
+            <in src = "i - 1"></in>
+        </vertex>
+    </block>
+
+    <block id = "1" dims = "2">
+        <arg name = "i" val = "1..N"></arg>
+        <arg name = "j" val = "1..M"></arg>
+
+        <vertex condition = "" type = "1">
+            <in src = "i, j"></in>
+        </vertex>
+    </block>
+
+    <block id = "2" dims = "3">
+        <arg name = "i" val = "1..N"></arg>
+        <arg name = "j" val = "1..M"></arg>
+        <arg name = "k" val = "1..N"></arg>
+
+        <vertex condition = "" type = "1">
+            <in bsrc = 0
+            <in src = "i, j"></in>
+        </vertex>
+    </block>
+
+</algo>
