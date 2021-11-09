@@ -1,0 +1,171 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{a4wide}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{indentfirst}
+\usepackage[left=3cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
+\setlength{\parindent}{1.25cm}
+\linespread{1.3}
+\setcounter{page}{2}
+
+\newtheorem{myComment}{Замечание}
+\newtheorem{myDef}{Определение}
+\newtheorem{myProp}{Свойство}
+\newtheorem{myTeor}{Теорема}
+\newcommand{\dbtilde}[1]{\accentset{\approx}{#1}}
+\DeclareMathOperator{\sign}{sign}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{center}
+\vspace{-3cm}
+\includegraphics[width=0.5\textwidth]{sources/msu.eps}\\
+{\scshape Московский государственный университет имени}\\
+М. В. Ломоносова\\
+Факультет вычислительной математики и кибернетики\\
+Кафедра системного анализа
+
+\vfill
+
+% {\LARGE }
+
+\vspace{1cm}
+
+{\Huge\bfseries Суперкомпьютерное моделирование и технологии}\\
+
+\vspace{1cm}
+
+{\LARGE Задание 2}
+\end{center}
+
+\vspace{1cm}
+
+\begin{flushright}
+  \large
+  \textit{Студент 615 группы}\\
+  А.\,Н.~Ашабоков
+
+  \vspace{5mm}
+
+\end{flushright}
+
+\vfill
+
+\begin{center}
+Москва, 2020
+\end{center}
+
+\newpage
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\newpage
+\normalsize
+
+\section{Постановка задачи}
+
+    Необходимо предоставить аналитическое решение и программную реализацию алгоритма численного решения задачи вычисления слудющего интеграла:
+    
+    \begin{equation}
+        I = \int\int\limits_{G}\int \frac{dxdydz}{{(1 + x + y + z)}^3},
+    \end{equation}
+    где область $G$ ограничена поверхностями $x + y + z = 1$, $x = 0$, $y = 0$, $z = 0$.\\
+    
+    Также необходимо исследовать масштабируемость полученной программной реализации.
+
+\section{Аналитическое решение}
+
+\section{Описание численного алгоритма}
+
+    Данная задача решается численно с использованием метода Монте-Карло: 
+    \begin{enumerate}
+        \item Задаем функцию $F(x, y, z)$ следующего вида:
+            \begin{equation}
+                F\left(x, y, z\right) = \left\{
+                    \begin{array}{ll}
+                        f\left(x, y, z\right) & \left(x, y, z\right) \in G, \\
+                        0 & \left(x, y, z\right) \not\in G.
+                    \end{array}
+                \right.
+            \end{equation}
+        \item Далее преобразуем исходный интеграл:
+            \begin{equation}
+                I = \int\int\limits_{G}\int f\left(x, y, z\right)dxdydz = \int\int\limits_{G'}\int F\left(x, y, z\right) dxdydz.
+            \end{equation}
+            где $G'$ --- прямоугольник: $a_1 \leq x \leq b_1$, $a_2 \leq b_2$, $a_3 \leq b_3$.
+        \item После этого семплируем случайные точки из $G'$ и на них считаем значение функции $F$.
+        \item Окончательный результат получается из соотношения:
+            \begin{equation}
+                I' \approx \rvert G' \rvert \cdot \frac{1}{n} \sum\limits_{i = 1}^n F(p_i).
+            \end{equation}
+        \item Процесс продолжается до тех пор, пока значение ошибки не будет меньше некоторого наперед заданного значения $\varepsilon$: $|I - I'| < \varepsilon$.
+    \end{enumerate}
+
+\section{Результаты запуска программы}
+
+\subsection{Bluegene}
+
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Точность $\varepsilon$ & Число MPI-процессов & Время работы (с) & Ускорение & Ошибка \\
+        \hline
+        1.0 \code 10^{-4} & 2 & 0.0152145408 & 1 & 0.0000664537\\
+        1.0 \code 10^{-4} & 4 & 0.0145364892 & 1.05 & 0.0000894448\\
+        1.0 \code 10^{-4} & 16 & 0.0003104247 & 49.01 & 0.0000379321\\
+        1.0 \code 10^{-4} & 64 & 0.0001935188 & 78.62 & 0.0000136576\\
+        \hline
+        2.0 \code 10^{-5} & 2 & 0.0076551648 & 1 & 0.0000090474\\
+        2.0 \code 10^{-5} & 4 & 0.0175335271 & 0.44 & 0.0000065640\\
+        2.0 \code 10^{-5} & 16 & 0.0007019118 & 10.91 & 0.0000196344\\
+        2.0 \code 10^{-5} & 64 & 0.0001932365 & 39.62 & 0.0000136576\\
+        \hline
+        8.0 \code 10^{-6} & 2 & 0.0104568517 & 1 & 0.0000056839\\
+        8.0 \code 10^{-6} & 4 & 0.0175511012 & 0.59 & 0.0000065640\\
+        8.0 \code 10^{-6} & 16 & 0.0007172153 & 14.58 & 0.0000024089\\
+        8.0 \code 10^{-6} & 64 & 0.0002022035 & 51.71 & 0.0000021677\\
+        \hline
+    \end{tabular}
+
+\subsection{Polus}
+
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Точность $\varepsilon$ & Число MPI-процессов & Время работы (с) & Ускорение & Ошибка \\
+        \hline
+        1.0 \code 10^{-4} & 2 & 0.0152145408 & 1 & 0.0000664537\\
+        1.0 \code 10^{-4} & 4 & 0.0345364892 & 0.44 & 0.0000894448\\
+        1.0 \code 10^{-4} & 16 & 0.0077306512 & 1.97 & 0.0000158393\\
+        1.0 \code 10^{-4} & 64 & - & - & -\\
+        \hline
+        2.0 \code 10^{-5} & 2 & 0.0076551648 & 1 & 0.0000035639\\
+        2.0 \code 10^{-5} & 4 & 0.0032367209 & 2.37 & 0.0000025931\\
+        2.0 \code 10^{-5} & 16 & 0.0012922971 & 5.92 & 0.0000021561\\
+        2.0 \code 10^{-5} & 64 & - & - & -\\
+        \hline
+        8.0 \code 10^{-6} & 2 & 0.0355211364 & 1 & 0.0000007309\\
+        8.0 \code 10^{-6} & 4 & 0.0183235371 & 1.94 & 0.0000005321\\
+        8.0 \code 10^{-6} & 16 & 0.0127631197 & 2.78 & 0.0000006193\\
+        8.0 \code 10^{-6} & 64 & - & - & -\\
+        \hline
+    \end{tabular}
+
+\newpage
+\section{Библиография}
+
+\begin{thebibliography}{}
+	\bibitem{Kurzh} А.Б. Куржанский, П.А. Точилин К задаче синтеза управлений при неопределенности по данным финитных наблюдателей //
+	 журнал Обыкновенные дифференциальные уравнения, том 47, номер 11, 2011г, сс.1599-1607 
+	
+\end{thebibliography}
+
+\end{document}
