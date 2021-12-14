@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Computer.h"
 
-const char FILENAME = "res.csv";
+char FILENAME[10] = "res.csv";
 
 class Solver {
     int64_t omp_count;
@@ -17,7 +17,7 @@ class Solver {
     int64_t current_rank;
     int64_t grid_size;
     int64_t thread_count;
-    std::vector<std::vector<int64_t>> grid;
+    std::vector<std::vector<int64_t> > grid;
     Computer computer;
     double EPS;
     double step;
@@ -25,6 +25,7 @@ class Solver {
     double* next_w;
     double* error_vec;
     double* multiplied_error;
+    double* diff_w;
 
 public:
 

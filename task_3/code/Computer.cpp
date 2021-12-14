@@ -233,6 +233,29 @@ double* Computer::fill_grid_vector(double first_element, double last_element, do
     return vector;
 }
 
+Computer::Computer() {
+    this->a_1 = -2;
+    this->a_2 = 3;
+    this->b_1 = -1;
+    this->b_2 = 4;
+    this->h_1 = 0.01;
+    this->h_2 = 0.01;
+    // TODO check if this returns correct number of grid elements
+    this->N = (a_2 - a_1) / h_1;
+    this->M = (b_2 - b_1) / h_2;
+    this->matrix_A = NULL;
+    this->matrix_B = NULL;
+    this->alpha_l = 0;
+    this->alpha_r = 0;
+    this->alpha_t = 1;
+    this->alpha_b = 1;
+    //TODO check if generates correct grid
+    this->x_grid = this->fill_grid_vector(a_1, a_2, h_1, this->N + 1);
+    this->y_grid = this->fill_grid_vector(b_1, b_2, h_2, this->M + 1);
+    this->create_matrices();
+    this->fill_index_map();
+}
+
 Computer::Computer(double a_1, double b_1, double a_2, double b_2, double h_1, double h_2) {
     this->a_1 = a_1;
     this->a_2 = a_2;
@@ -243,8 +266,8 @@ Computer::Computer(double a_1, double b_1, double a_2, double b_2, double h_1, d
     // TODO check if this returns correct number of grid elements
     this->N = (a_2 - a_1) / h_1;
     this->M = (b_2 - b_1) / h_2;
-    this->matrix_A = nullptr;
-    this->matrix_B = nullptr;
+    this->matrix_A = NULL;
+    this->matrix_B = NULL;
     this->alpha_l = 0;
     this->alpha_r = 0;
     this->alpha_t = 1;
@@ -266,8 +289,8 @@ Computer::Computer(double a_1, double b_1, double a_2, double b_2, int64_t N, in
     this->h_2 = (b_2 - b_1) / M;
     this->N = N;
     this->M = M;
-    this->matrix_A = nullptr;
-    this->matrix_B = nullptr;
+    this->matrix_A = NULL;
+    this->matrix_B = NULL;
     this->alpha_l = 0;
     this->alpha_r = 0;
     this->alpha_t = 1;

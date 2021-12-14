@@ -1,4 +1,4 @@
-#include Solver.h
+#include "Solver.h"
 
 Solver::Solver(Computer &computer, double eps) {
     // MPI_Init();
@@ -14,6 +14,7 @@ Solver::Solver(Computer &computer, double eps) {
     this->next_w = new double[this->grid_size];
     this->error_vec = new double[this->grid_size];
     this->multiplied_error = new double[this->grid_size];
+    this->diff_w = new double[this->grid_size];
 
     int64_t min_batch_size = this->grid_size / this->thread_count;
     std::vector<int64_t> vector_sizes;
@@ -50,47 +51,54 @@ void Solver::solve() {
     {
         #pragma omp parallel for
         for (int64_t thread = 0; thread < this->thread_count; thread++) {
-            for (int64_t index : this->grid[thread]) {
+            for (int64_t i = 0; i < this->grid[thread].size(); i++) {
+                int64_t index = this->grid[thread][i];
                 this->next_w[index] = this->current_w[index] - this->step * this->error_vec[index];
+                this->diff_w[index] = this->next_w[index] - this->current_w[index];
             }
+        }
 
-            #pragma omp barrier
-
-            for (int64_t index : this->grid[thread]) {
+        #pragma omp parallel for
+        for (int64_t thread = 0; thread < this->thread_count; thread++) {
+            for (int64_t i = 0; i < this->grid[thread].size(); i++) {
+                int64_t index = this->grid[thread][i];
                 this->error_vec[index] = 0;
 
                 for (int64_t i = 0; i < this->grid_size; i++) {
                     this->error_vec[index] += this->computer.matrix_A[index][i] * this->next_w[i] - this->computer.matrix_B[i];
                 }
             }
+        }
 
-            #pragma omp barrier
-
-            for (int64_t index : this->grid[thread]) {
+        #pragma omp parallel for
+        for (int64_t thread = 0; thread < this->thread_count; thread++) {
+            for (int64_t i = 0; i < this->grid[thread].size(); i++) {
+                int64_t index = this->grid[thread][i];
                 this->multiplied_error[index] = 0;
 
-                for (int64_t i = 0; i < this->grid_size; i++) {
-                    this->multiplied_error[index] += this->computer.matrix_A[index][i] * this->error_vec[i];
+                for (int64_t j = 0; j < this->grid_size; j++) {
+                    this->multiplied_error[index] += this->computer.matrix_A[index][j] * this->error_vec[j];
                 }
             }
+        }
 
-            #pragma omp barrier
-
+        #pragma omp parallel for
+        for (int64_t thread = 0; thread < this->thread_count; thread++) {
             if (thread == 0) {
                 // Main thread
                 double dot_prod = this->computer.dot_product(this->multiplied_error, this->error_vec);
                 double norm = this->computer.norm(this->multiplied_error);
                 this->step = dot_prod / norm;
-                tolerance = this->computer.norm(this->next_w, this->current_w);
+                tolerance = this->computer.norm(this->diff_w);
             }
+        }
 
-            #pragma omp barrier
-
-            for (int64_t index : this->grid[thread]) {
-                this-current_w[index] = this->next_w[index];
+        #pragma omp parallel for
+        for (int64_t thread = 0; thread < this->thread_count; thread++) {
+            for (int64_t i = 0; i < this->grid[thread].size(); i++) {
+                int64_t index = this->grid[thread][i];
+                this->current_w[index] = this->next_w[index];
             }
-
-            #pragma omp barrier
         }
     } while (tolerance > this->EPS);
 }

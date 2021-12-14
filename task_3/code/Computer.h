@@ -26,7 +26,7 @@ public:
     double* matrix_B;
     double* x_grid;
     double* y_grid;
-    std::vector<std::pair<int64_t, int64_t>> index_map;
+    std::vector<std::pair<int64_t, int64_t> > index_map;
 
     double f_function(double x, double y);
 
@@ -47,6 +47,8 @@ public:
     void create_matrices();
 
     double* fill_grid_vector(double first_element, double last_element, double step, int64_t count);
+
+    Computer();
 
     Computer(double a_1, double b_1, double a_2, double b_2, double h_1, double h_2);
 
