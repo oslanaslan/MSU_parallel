@@ -1,4 +1,4 @@
-#include "Solver.h"
+#include "Solver_omp.h"
 
 Solver::Solver(Computer &computer, double eps) {
     // MPI_Init();
@@ -119,6 +119,7 @@ void Solver::write_result() {
 }
 
 Solver::~Solver() {
+    // MPI_Finalize();
     delete[] current_w;
     delete[] next_w;
     delete[] error_vec;
