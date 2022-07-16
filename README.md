@@ -2,7 +2,7 @@
 
 ## Task 1
 
-Create config file for parallel computing graph visualizer.
+Create config file for parallel computing graph visualizer
 
 Input: C program
 
