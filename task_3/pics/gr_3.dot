@@ -1,0 +1,23 @@
+digraph gr_3 {
+	a0 [label="0=000"];
+	a1 [label="1=001"];
+	a2 [label="2=010"];
+	a3 [label="3=011"];
+	a4 [label="4=100"];
+	a5 [label="5=101"];
+	a6 [label="6=110"];
+	a7 [label="7=111"];
+
+	a0 -> a1 [label="1"]
+	a0 -> a2 [label="2"]
+	a0 -> a4 [label="3"]
+	a1 -> a3 [label="2"]
+	a1 -> a5 [label="3"]
+	a2 -> a6 [label="3"]
+	a3 -> a7 [label="3"]
+
+	{ rank=same; a4 a5 }
+	{ rank=same; a0 a1 }
+	{ rank=same; a2 a3 }
+	{ rank=same; a6 a7 }
+}

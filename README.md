@@ -15,3 +15,7 @@ Calculate multivariate integral using Monte Carlo method
 Input: integral
 
 Output: C program for parallel integral calculating using MPI and OpenMP
+
+## Task 3
+
+Quick sort algorithm realization using MPI and OpenMP

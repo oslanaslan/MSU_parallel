@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+module load slurm slurm/2.5.6
+module load openmpi/1.8.4-gcc
+module load gcc/5.5.0
+export PATH

@@ -1,0 +1,8 @@
+digraph gr_1 {
+	a0 [label="0=000"];
+	a1 [label="1=001"];
+
+	a0 -> a1 [label="1"]
+
+	{ rank=same; a0 a1 }
+}
